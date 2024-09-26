@@ -5,11 +5,11 @@ import './RewardpointsApp.css'
 // Simulated API call to fetch transaction data
 const fetchallTransactions = async () => {
   return [
-    { TransactionId: 1, name: "Minati", date: "2024-09-25", amount: 120.50 },
+    { TransactionId: 1, name: "Minati", date: "2024-09-25", amount: 120 },
     { TransactionId: 2, name: "John Doe", date: "2024-08-15", amount: 175.99 },
     { TransactionId: 3, name: "John Doe", date: "2024-06-15", amount: 75.99 },
     { TransactionId: 4, name: "John Doe", date: "2024-07-01", amount: 200.75 },
-    { TransactionId: 5, name: "Minati", date: "2024-09-30", amount: 95.50 },
+    { TransactionId: 5, name: "Minati", date: "2024-09-30", amount: 95 },
     { TransactionId: 6, name: "John Doe", date: "2024-09-01", amount: 210.25 },
     { TransactionId: 7, name: "Jane Smith", date: "2024-09-20", amount: 80.10 },
     { TransactionId: 8, name: "Chris Evans", date: "2024-09-10", amount: 130.99 },
@@ -34,7 +34,7 @@ const fetchallTransactions = async () => {
     { TransactionId: 27, name: "Jane Smith", date: "2024-07-12", amount: 175.99 },
     { TransactionId: 28, name: "Chris Evans", date: "2024-09-02", amount: 205.40 },
     { TransactionId: 29, name: "Minati", date: "2024-06-22", amount: 90.35 },
-    { TransactionId: 30, name: "John Doe", date: "2024-06-25", amount: 105.50 },
+    { TransactionId: 30, name: "John Doe", date: "2024-06-25", amount: 105 },
     { TransactionId: 31, name: "Jane Smith", date: "2024-06-10", amount: 140.00 },
     { TransactionId: 32, name: "Chris Evans", date: "2024-06-15", amount: 160.10 },
     { TransactionId: 33, name: "Minati", date: "2024-07-01", amount: 135.80 },
@@ -44,20 +44,20 @@ const fetchallTransactions = async () => {
     { TransactionId: 37, name: "Jane Smith", date: "2024-05-15", amount: 210.75 },
     { TransactionId: 38, name: "Chris Evans", date: "2024-05-20", amount: 135.99 },
     { TransactionId: 39, name: "Minati", date: "2024-04-28", amount: 100.25 },
-    { TransactionId: 40, name: "John Doe", date: "2024-04-18", amount: 180.50 },
+    { TransactionId: 40, name: "John Doe", date: "2024-04-18", amount: 180 },
     { TransactionId: 41, name: "Jane Smith", date: "2024-04-12", amount: 150.10 },
     { TransactionId: 42, name: "Chris Evans", date: "2024-04-25", amount: 190.20 },
     { TransactionId: 43, name: "Minati", date: "2024-03-15", amount: 220.70 },
-    { TransactionId: 44, name: "John Doe", date: "2024-03-28", amount: 125.50 },
+    { TransactionId: 44, name: "John Doe", date: "2024-03-28", amount: 125 },
     { TransactionId: 45, name: "Jane Smith", date: "2024-03-10", amount: 175.30 },
     { TransactionId: 46, name: "Chris Evans", date: "2024-03-18", amount: 205.40 },
     { TransactionId: 47, name: "Minati", date: "2024-02-05", amount: 135.45 },
     { TransactionId: 48, name: "John Doe", date: "2024-02-17", amount: 195.80 },
     { TransactionId: 49, name: "Jane Smith", date: "2024-02-22", amount: 120.60 },
     { TransactionId: 50, name: "Chris Evans", date: "2024-02-28", amount: 160.75 },
-    { TransactionId: 51, name: "Minati", date: "2024-01-20", amount: 210.50 },
+    { TransactionId: 51, name: "Minati", date: "2024-01-20", amount: 210 },
     { TransactionId: 52, name: "John Doe", date: "2024-01-30", amount: 220.15 },
-    { TransactionId: 53, name: "Jane Smith", date: "2024-01-25", amount: 140.50 },
+    { TransactionId: 53, name: "Jane Smith", date: "2024-01-25", amount: 140 },
     { TransactionId: 54, name: "Chris Evans", date: "2024-01-12", amount: 185.60 },
   ];
 };
@@ -154,14 +154,14 @@ const calculatePoints = (amount) => {
               })
               .map(([monthYear, points]) => (
                 <li key={monthYear}>
-                  {monthYear}: {points} points
+                  {monthYear}: {Math.floor(points)} points
                 </li>
               ));
   
             return (
               <div key={customerName} className="customer-reward">
                 <h2>{customerName}</h2>
-                <h3>Total Points (Last 3 Months): {data.lastThreeMonthsPoints}</h3>
+                <h3>Total Points (Last 3 Months): {data.lastThreeMonthsPoints.toFixed(0)} Points</h3>
                 <h4>Monthly Breakdown (Last 3 Months):</h4>
                 <ul>
                   {lastThreeMonthsPoints}

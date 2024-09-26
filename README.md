@@ -50,8 +50,8 @@ The program aims to calculate and display customer reward points based on the fo
 To run the project locally, follow these steps:
 
 1. **Clone the repository**:
-   ```bash
    git clone https://github.com/Minatinaka/Rewards-program.git
+   
 2. **Navigate to the project directory:**:
 
     cd Rewards-program
