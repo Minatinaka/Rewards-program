@@ -1,5 +1,6 @@
 // RewardpointsApp.js
 import React, { useEffect, useState } from "react";
+import './RewardpointsApp.css'
 
 // Simulated API call to fetch transaction data
 const fetchallTransactions = async () => {
@@ -63,87 +64,114 @@ const fetchallTransactions = async () => {
 
 // Helper function to calculate reward points based on transaction amount
 const calculatePoints = (amount) => {
-  let points = 0;
-
-  if (amount > 100) {
-    points += (amount - 100) * 2;
-    amount = 100;
-  }
-
-  if (amount > 50) {
-    points += amount - 50;
-  }
-
-  return points;
-};
-
-// Group transactions by customer and by month/year
-const groupTransactionsByCustomer = (transactions) => {
-  const result = {};
-
-  transactions.forEach((transaction) => {
-    const { name, date, amount } = transaction;
+    let points = 0;
+  
+    if (amount > 100) {
+      points += (amount - 100) * 2;
+      amount = 100;
+    }
+  
+    if (amount > 50) {
+      points += amount - 50;
+    }
+  
+    return points;
+  };
+  
+  // Helper function to check if a date is within the last 3 months
+  const isWithinLastThreeMonths = (date) => {
+    const currentDate = new Date();
     const transactionDate = new Date(date);
-    const monthYear = transactionDate.toLocaleString("default", {
-      month: "long",
-      year: "numeric",
+  
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
+  
+    return transactionDate >= threeMonthsAgo && transactionDate <= currentDate;
+  };
+  
+  // Group transactions by customer and by month/year
+  const groupTransactionsByCustomer = (transactions) => {
+    const result = {};
+  
+    transactions.forEach((transaction) => {
+      const { name, date, amount } = transaction;
+      const transactionDate = new Date(date);
+      const monthYear = transactionDate.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+  
+      if (!result[name]) {
+        result[name] = {
+          monthlyPoints: {},
+          totalPoints: 0,
+          lastThreeMonthsPoints: 0,  // For points in the last 3 months
+        };
+      }
+  
+      if (!result[name].monthlyPoints[monthYear]) {
+        result[name].monthlyPoints[monthYear] = 0;
+      }
+  
+      const points = calculatePoints(amount);
+  
+      result[name].monthlyPoints[monthYear] += points;
+      result[name].totalPoints += points;
+  
+      // Add points to last 3 months if the transaction is within that period
+      if (isWithinLastThreeMonths(date)) {
+        result[name].lastThreeMonthsPoints += points;
+      }
     });
-
-    if (!result[name]) {
-      result[name] = {
-        monthlyPoints: {},
-        totalPoints: 0,
+  
+    return result;
+  };
+  
+  // Main component
+  const RewardpointsApp = () => {
+    const [rewardPoints, setRewardPoints] = useState({});
+  
+    useEffect(() => {
+      const fetchTransactions = async () => {
+        const transactions = await fetchallTransactions();
+        const groupedPoints = groupTransactionsByCustomer(transactions);
+        setRewardPoints(groupedPoints);
       };
-    }
-
-    if (!result[name].monthlyPoints[monthYear]) {
-      result[name].monthlyPoints[monthYear] = 0;
-    }
-
-    const points = calculatePoints(amount);
-
-    result[name].monthlyPoints[monthYear] += points;
-    result[name].totalPoints += points;
-  });
-
-  return result;
-};
-
-// Main component
-const RewardpointsApp = () => {
-  const [rewardPoints, setRewardPoints] = useState({});
-
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      const transactions = await fetchallTransactions();
-      const groupedPoints = groupTransactionsByCustomer(transactions);
-      setRewardPoints(groupedPoints);
-    };
-
-    fetchTransactions();
-  }, []);
-
-  return (
-    <div className="reward-points">
-      <h1>Reward Points Summary</h1>
-      <div className="reward-details">
-        {Object.entries(rewardPoints).map(([customerName, data]) => (
-          <div key={customerName} className="customer-reward">
-            <h2>{customerName}</h2>
-            <h3>Total Points: {data.totalPoints}</h3>
-            <h4>Monthly Breakdown:</h4>
-            <ul>
-              {Object.entries(data.monthlyPoints).map(([monthYear, points]) => (
+  
+      fetchTransactions();
+    }, []);
+  
+    return (
+      <div className="reward-points">
+        <h1>Reward Points Summary</h1>
+        <div className="reward-details">
+          {Object.entries(rewardPoints).map(([customerName, data]) => {
+            const lastThreeMonthsPoints = Object.entries(data.monthlyPoints)
+              .filter(([monthYear]) => {
+                const [month, year] = monthYear.split(" ");
+                const transactionDate = new Date(`${month} 1, ${year}`);
+                return isWithinLastThreeMonths(transactionDate);
+              })
+              .map(([monthYear, points]) => (
                 <li key={monthYear}>
                   {monthYear}: {points} points
                 </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+              ));
+  
+            return (
+              <div key={customerName} className="customer-reward">
+                <h2>{customerName}</h2>
+                <h3>Total Points (Last 3 Months): {data.lastThreeMonthsPoints}</h3>
+                <h4>Monthly Breakdown (Last 3 Months):</h4>
+                <ul>
+                  {lastThreeMonthsPoints}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
-};
-
-export default RewardpointsApp;
+    );
+  };
+  
+  export default RewardpointsApp;

@@ -1,0 +1,10 @@
+.reward-points {
+    padding: 20px;
+  }
+  
+  .customer-reward {
+    background-color: #f0f0f0; /* Light grey background */
+    border-radius: 5px;       /* Rounded corners */
+    padding: 15px;            /* Padding inside the box */
+    margin-bottom: 15px;      /* Spacing between customer sections */
+  }
